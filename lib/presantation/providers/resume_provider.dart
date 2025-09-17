@@ -13,6 +13,13 @@ import '../../data/repositories/project_repository.dart';
 import '../../data/repositories/skill_repository.dart';
 
 import '../../data/services/sqlite_service.dart';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+
+
 
 class ResumeProvider extends ChangeNotifier {
   // Repositories
@@ -210,4 +217,100 @@ class ResumeProvider extends ChangeNotifier {
   Future<void> _saveOrder(String table, List<int> ids) async {
     await SQLiteService.instance.updatePositions(table, ids);
   }
+  Future<Uint8List> generatePdf() async {
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(32),
+        build: (context) => [
+          if (personalInfo != null) ...[
+            pw.Text(personalInfo!.name,
+                style: pw.TextStyle(fontSize: 26, fontWeight: pw.FontWeight.bold)),
+            pw.Text(personalInfo!.email),
+            if (personalInfo!.phone.isNotEmpty) pw.Text(personalInfo!.phone),
+            pw.SizedBox(height: 16),
+          ],
+
+          // Education
+          if (educationList.isNotEmpty) ...[
+            pw.Header(level: 1, text: 'Education'),
+            ...educationList.map((e) => pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(e.degree,
+                    style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+                pw.Text('${e.school} (${e.year})'),
+                pw.SizedBox(height: 8),
+              ],
+            )),
+          ],
+
+          // Experience
+          if (experienceList.isNotEmpty) ...[
+            pw.Header(level: 1, text: 'Experience'),
+            ...experienceList.map((e) => pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(e.job,
+                    style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+                pw.Text('${e.company} (${e.duration})'),
+                if (e.description.isNotEmpty) pw.Text(e.description),
+                pw.SizedBox(height: 8),
+              ],
+            )),
+          ],
+
+          // Skills
+          if (skillsList.isNotEmpty) ...[
+            pw.Header(level: 1, text: 'Skills'),
+            pw.Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: skillsList
+                  .map((s) => pw.Container(
+                padding: const pw.EdgeInsets.symmetric(
+                    horizontal: 8, vertical: 4),
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(color: PdfColors.grey),
+                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+                ),
+                child: pw.Text('${s.name} (${s.level})',
+                    style: const pw.TextStyle(fontSize: 12)),
+              ))
+                  .toList(),
+            ),
+            pw.SizedBox(height: 8),
+          ],
+
+          // Projects
+          if (projectsList.isNotEmpty) ...[
+            pw.Header(level: 1, text: 'Projects'),
+            ...projectsList.map((p) => pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(p.title,
+                    style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+                if (p.techStack.isNotEmpty) pw.Text('Tech: ${p.techStack}'),
+                if (p.description.isNotEmpty) pw.Text(p.description),
+                pw.SizedBox(height: 8),
+              ],
+            )),
+          ],
+        ],
+      ),
+    );
+
+    return await pdf.save();
+  }
+
+  Future<File> exportPdf({String fileName = 'resume.pdf'}) async {
+    final bytes = await generatePdf();
+    final dir = await getExternalStorageDirectory();
+    final file = File('${dir?.path}/$fileName');
+    await file.writeAsBytes(bytes);
+    return file;
+  }
 }
+

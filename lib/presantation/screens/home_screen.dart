@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:resume_builder/presantation/screens/experience_screen.dart';
 import 'package:resume_builder/presantation/screens/personal_info_screen.dart';
 import 'package:resume_builder/presantation/screens/preview_screen.dart';
 import 'package:resume_builder/presantation/screens/projects_screen.dart';
 import 'package:resume_builder/presantation/screens/skills_screen.dart';
 
 import '../providers/resume_provider.dart';
+import '../widgets/section_card.dart';
 import 'education_screen.dart';
-
+import '../../core/theme.dart';
+import 'experience_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,74 +18,104 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Resume Builder')),
-      body: Consumer<ResumeProvider>(
-        builder: (context, provider, child) {
-          return ListView(
-            children: [
-              _buildSectionCard(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth > 600;
+          final sections = [
+            SectionCard(
+              title: 'Personal Info',
+              icon: Icons.person,
+              onTap: () => Navigator.push(
                 context,
-                'Personal Info',
-                Icons.person,
-                    () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const PersonalInfoScreen()),
-                ),
+                MaterialPageRoute(builder: (_) => const PersonalInfoScreen()),
               ),
-              _buildSectionCard(
+            ),
+            SectionCard(
+              title: 'Education',
+              icon: Icons.school,
+              onTap: () => Navigator.push(
                 context,
-                'Education',
-                Icons.school,
-                    () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const EducationScreen()),
-                ),
+                MaterialPageRoute(builder: (_) => const EducationScreen()),
               ),
-              _buildSectionCard(
+            ),
+            SectionCard(
+              title: 'Experience',
+              icon: Icons.work,
+              onTap: () => Navigator.push(
                 context,
-                'Experience',
-                Icons.work,
-                    () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ExperienceScreen()),
-                ),
+                MaterialPageRoute(builder: (_) => const ExperienceScreen()),
               ),
-              _buildSectionCard(
+            ),
+            SectionCard(
+              title: 'Skills',
+              icon: Icons.star,
+              onTap: () => Navigator.push(
                 context,
-                'Skills',
-                Icons.star,
-                    () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const SkillsScreen()),
-                ),
+                MaterialPageRoute(builder: (_) => const SkillsScreen()),
               ),
-              _buildSectionCard(
+            ),
+            SectionCard(
+              title: 'Projects',
+              icon: Icons.code,
+              onTap: () => Navigator.push(
                 context,
-                'Projects',
-                Icons.code,
-                    () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ProjectsScreen()),
-                ),
+                MaterialPageRoute(builder: (_) => const ProjectsScreen()),
               ),
-              const SizedBox(height: 80), // For FAB
-            ],
-          );
+            ),
+          ];
+
+          if (isDesktop) {
+            return Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppTheme.spacingMedium),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Sections',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: AppTheme.spacingMedium),
+                        Expanded(child: ListView(children: sections)),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.grey[100],
+                    child: const Center(
+                      child: Text('Preview Pane (Desktop) - Navigate to sections above'),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return Consumer<ResumeProvider>(
+              builder: (context, provider, child) {
+                return ListView(
+                  padding: EdgeInsets.all(AppTheme.spacingMedium),
+                  children: [
+                    ...sections,
+                    SizedBox(height: AppTheme.spacingLarge * 3), // For FAB
+                  ],
+                );
+              },
+            );
+          }
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PreviewScreen())),
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const PreviewScreen()),
+        ),
         child: const Icon(Icons.preview),
-      ),
-    );
-  }
-
-  Widget _buildSectionCard(BuildContext context, String title, IconData icon, VoidCallback onTap) {
-    return Card(
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(title),
-        trailing: const Icon(Icons.arrow_forward_ios),
-        onTap: onTap,
       ),
     );
   }

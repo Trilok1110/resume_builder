@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../data/models/skill.dart';
 import '../providers/resume_provider.dart';
+import '../widgets/primary_button.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});
@@ -24,7 +25,8 @@ class SkillsScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-          ElevatedButton(
+          PrimaryButton(
+            text: 'Save',
             onPressed: () {
               final provider = Provider.of<ResumeProvider>(context, listen: false);
               final newSkill = Skill(
@@ -35,7 +37,6 @@ class SkillsScreen extends StatelessWidget {
               skill == null ? provider.addSkill(newSkill) : provider.updateSkill(newSkill);
               Navigator.pop(context);
             },
-            child: const Text('Save'),
           ),
         ],
       ),
