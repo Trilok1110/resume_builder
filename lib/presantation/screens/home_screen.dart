@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:resume_builder/presantation/screens/experience_screen.dart';
 import 'package:resume_builder/presantation/screens/personal_info_screen.dart';
+import 'package:resume_builder/presantation/screens/preview_screen.dart';
 import 'package:resume_builder/presantation/screens/projects_screen.dart';
 import 'package:resume_builder/presantation/screens/skills_screen.dart';
 
@@ -71,7 +72,7 @@ class HomeScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, '/preview'), // Stub
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PreviewScreen())),
         child: const Icon(Icons.preview),
       ),
     );

@@ -58,15 +58,13 @@ class ProjectsScreen extends StatelessWidget {
               return const Center(child: Text('No projects added yet.'));
             }
 
-            return ReorderableListView.builder(
-              itemCount: projects.length,
+            return ReorderableListView(
               onReorder: (oldIndex, newIndex) {
                 provider.reorderProjects(oldIndex, newIndex);
               },
-              itemBuilder: (context, index) {
-                final proj = projects[index];
+              children: projects.map((proj) {
                 return ListTile(
-                  key: ValueKey(proj.id),
+                  key: ValueKey(proj.id), // must not be null
                   title: Text(proj.title),
                   subtitle: Text(proj.techStack),
                   trailing: Row(
@@ -84,10 +82,11 @@ class ProjectsScreen extends StatelessWidget {
                     ],
                   ),
                 );
-              },
+              }).toList(),
             );
           },
         ),
+
 
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddEditDialog(context),
