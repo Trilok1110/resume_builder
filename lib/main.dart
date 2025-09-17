@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import 'package:resume_builder/presantation/providers/resume_provider.dart';
 import 'core/theme.dart';
-import 'data/models/education.dart';
-import 'data/models/personal_info.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,10 +12,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return ChangeNotifierProvider(create: (_) => ResumeProvider() ,child:MaterialApp(
       title: 'Resume Builder',
       theme: AppTheme.theme,
       home: const MyHomePage(title: 'Resume Builder Home'),
+    )
     );
   }
 }
