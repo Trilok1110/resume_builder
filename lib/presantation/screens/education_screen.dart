@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/theme.dart';
 import '../../data/models/education.dart';
 import '../providers/resume_provider.dart';
+import '../widgets/custom_alert_box.dart';
+import '../widgets/custom_text_field.dart';
 
 class EducationScreen extends StatelessWidget {
   const EducationScreen({super.key});
@@ -14,25 +17,25 @@ class EducationScreen extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text(edu == null ? 'Add Education' : 'Edit Education'),
-        content: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                controller: degreeController,
-                decoration: const InputDecoration(labelText: 'Degree'),
-              ),
-              TextField(
-                controller: schoolController,
-                decoration: const InputDecoration(labelText: 'School'),
-              ),
-              TextField(
-                controller: yearController,
-                decoration: const InputDecoration(labelText: 'Year'),
-              ),
-            ],
-          ),
+      builder: (_) => CustomAlertBox(
+        title: edu == null ? 'Add Education' : 'Edit Education',
+        content: Column(
+          children: [
+            CustomTextField(
+              label: 'Degree',
+              controller: degreeController,
+            ),
+            const SizedBox(height: AppTheme.spacingSmall),
+            CustomTextField(
+              label: 'School / University',
+              controller: schoolController,
+            ),
+            const SizedBox(height: AppTheme.spacingSmall),
+            CustomTextField(
+              label: 'Year',
+              controller: yearController,
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -41,7 +44,8 @@ class EducationScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              final provider = Provider.of<ResumeProvider>(context, listen: false);
+              final provider =
+              Provider.of<ResumeProvider>(context, listen: false);
               final newEdu = Education(
                 id: edu?.id,
                 degree: degreeController.text,
@@ -58,6 +62,7 @@ class EducationScreen extends StatelessWidget {
         ],
       ),
     );
+;
   }
 
 

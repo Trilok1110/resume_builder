@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/theme.dart';
 import '../../data/models/skill.dart';
 import '../providers/resume_provider.dart';
-import '../widgets/primary_button.dart';
+import '../widgets/custom_alert_box.dart';
+import '../widgets/custom_text_field.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});
@@ -14,33 +16,46 @@ class SkillsScreen extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text(skill == null ? 'Add Skill' : 'Edit Skill'),
+      builder: (_) => CustomAlertBox(
+        title: skill == null ? 'Add Skill' : 'Edit Skill',
         content: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Skill Name')),
-            TextField(controller: levelController, decoration: const InputDecoration(labelText: 'Level (e.g., Beginner, Intermediate, Expert)')),
+            CustomTextField(
+              label: 'Skill Name',
+              controller: nameController,
+            ),
+            const SizedBox(height: AppTheme.spacingSmall),
+            CustomTextField(
+              label: 'Level (e.g., Beginner, Intermediate, Expert)',
+              controller: levelController,
+            ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-          PrimaryButton(
-            text: 'Save',
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
             onPressed: () {
-              final provider = Provider.of<ResumeProvider>(context, listen: false);
+              final provider =
+              Provider.of<ResumeProvider>(context, listen: false);
               final newSkill = Skill(
                 id: skill?.id,
                 name: nameController.text,
                 level: levelController.text,
               );
-              skill == null ? provider.addSkill(newSkill) : provider.updateSkill(newSkill);
+              skill == null
+                  ? provider.addSkill(newSkill)
+                  : provider.updateSkill(newSkill);
               Navigator.pop(context);
             },
+            child: const Text('Save'),
           ),
         ],
       ),
     );
+;
   }
 
   @override

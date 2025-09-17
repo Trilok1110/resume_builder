@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/theme.dart';
 import '../../data/models/project.dart';
 import '../providers/resume_provider.dart';
+import '../widgets/custom_alert_box.dart';
+import '../widgets/custom_text_field.dart';
 
 class ProjectsScreen extends StatelessWidget {
   const ProjectsScreen({super.key});
@@ -14,16 +17,16 @@ class ProjectsScreen extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text(proj == null ? 'Add Project' : 'Edit Project'),
-        content: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(controller: titleController, decoration: const InputDecoration(labelText: 'Title')),
-              TextField(controller: techController, decoration: const InputDecoration(labelText: 'Tech Stack')),
-              TextField(controller: descController, decoration: const InputDecoration(labelText: 'Description')),
-            ],
-          ),
+      builder: (_) => CustomAlertBox(
+        title: proj == null ? 'Add Project' : 'Edit Project',
+        content: Column(
+          children: [
+            CustomTextField(label: 'Title', controller: titleController),
+            const SizedBox(height: AppTheme.spacingSmall),
+            CustomTextField(label: 'Tech Stack', controller: techController),
+            const SizedBox(height: AppTheme.spacingSmall),
+            CustomTextField(label: 'Description', controller: descController, maxLines: 3),
+          ],
         ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
@@ -50,21 +53,20 @@ class ProjectsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Projects')),
-        body: Consumer<ResumeProvider>(
-          builder: (context, provider, child) {
-            final projects = provider.projectsList;
+      body: Consumer<ResumeProvider>(
+        builder: (context, provider, child) {
+          final projects = provider.projectsList;
 
-            if (projects.isEmpty) {
-              return const Center(child: Text('No projects added yet.'));
-            }
+          if (projects.isEmpty) {
+            return const Center(child: Text('No projects added yet.'));
+          }
 
-            return ReorderableListView(
-              onReorder: (oldIndex, newIndex) {
-                provider.reorderProjects(oldIndex, newIndex);
-              },
-              children: projects.map((proj) {
-                return ListTile(
-                  key: ValueKey(proj.id), // must not be null
+          return ReorderableListView(
+            onReorder: (oldIndex, newIndex) => provider.reorderProjects(oldIndex, newIndex),
+            children: [
+              for (final proj in projects)
+                ListTile(
+                  key: ValueKey(proj.id),
                   title: Text(proj.title),
                   subtitle: Text(proj.techStack),
                   trailing: Row(
@@ -81,13 +83,11 @@ class ProjectsScreen extends StatelessWidget {
                       const Icon(Icons.drag_handle),
                     ],
                   ),
-                );
-              }).toList(),
-            );
-          },
-        ),
-
-
+                ),
+            ],
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddEditDialog(context),
         child: const Icon(Icons.add),

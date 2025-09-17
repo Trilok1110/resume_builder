@@ -5,7 +5,7 @@ class PrimaryButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
   final bool isLoading;
-  final bool isFullWidth; // New: Control full-width behavior
+  final bool isFullWidth;
 
   const PrimaryButton({
     super.key,
@@ -21,58 +21,63 @@ class PrimaryButton extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isDesktop = screenWidth > 600;
 
-    return Padding(
-      padding: EdgeInsets.only(top: AppTheme.spacingMedium),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final buttonWidth = isFullWidth || !isDesktop
-              ? double.infinity
-              : constraints.maxWidth > 300
-              ? 300.0 // Max width on desktop for better UX
-              : double.infinity;
+    final buttonWidth = isFullWidth || !isDesktop ? double.infinity : 320.0;
 
-          return Center(
-            child: SizedBox(
-              width: buttonWidth,
-              height: kMinInteractiveDimension, // Ensures touch target size (48dp min)
-              child: ElevatedButton(
-                onPressed: isLoading || onPressed == null ? null : onPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.colorScheme.primary,
-                  foregroundColor: theme.colorScheme.onPrimary,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingMedium,
-                    vertical: AppTheme.spacingSmall,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppTheme.spacingSmall),
-                  ),
-                  elevation: isDesktop ? 2 : 4, // Subtle shadow on desktop
+    return Padding(
+      padding: const EdgeInsets.only(top: AppTheme.spacingMedium),
+      child: Center(
+        child: SizedBox(
+          width: buttonWidth,
+          height: 56,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  theme.colorScheme.primary,
+                  theme.colorScheme.primary.withOpacity(0.85),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: [
+                BoxShadow(
+                  color: theme.colorScheme.primary.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
                 ),
-                child: isLoading
-                    ? SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      theme.colorScheme.onPrimary,
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(14),
+                onTap: isLoading || onPressed == null ? null : onPressed,
+                child: Center(
+                  child: isLoading
+                      ? const SizedBox(
+                    height: 22,
+                    width: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.2,
+                      valueColor:
+                      AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
-                  ),
-                )
-                    : FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
+                  )
+                      : Text(
                     text,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      letterSpacing: 0.5,
+                      color: theme.colorScheme.onPrimary,
                     ),
                   ),
                 ),
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

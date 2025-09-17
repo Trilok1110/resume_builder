@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/theme.dart';
 import '../../data/models/experience.dart';
 import '../providers/resume_provider.dart';
+import '../widgets/custom_alert_box.dart';
 
 class ExperienceScreen extends StatelessWidget {
   const ExperienceScreen({super.key});
@@ -15,20 +17,36 @@ class ExperienceScreen extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text(exp == null ? 'Add Experience' : 'Edit Experience'),
-        content: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(controller: jobController, decoration: const InputDecoration(labelText: 'Job Title')),
-              TextField(controller: companyController, decoration: const InputDecoration(labelText: 'Company')),
-              TextField(controller: durationController, decoration: const InputDecoration(labelText: 'Duration')),
-              TextField(controller: descController, decoration: const InputDecoration(labelText: 'Description')),
-            ],
-          ),
+      builder: (_) => CustomAlertBox(
+        title: exp == null ? 'Add Experience' : 'Edit Experience',
+        content: Column(
+          children: [
+            TextField(
+              controller: jobController,
+              decoration: const InputDecoration(labelText: 'Job Title'),
+            ),
+            const SizedBox(height: AppTheme.spacingSmall),
+            TextField(
+              controller: companyController,
+              decoration: const InputDecoration(labelText: 'Company'),
+            ),
+            const SizedBox(height: AppTheme.spacingSmall),
+            TextField(
+              controller: durationController,
+              decoration: const InputDecoration(labelText: 'Duration'),
+            ),
+            const SizedBox(height: AppTheme.spacingSmall),
+            TextField(
+              controller: descController,
+              decoration: const InputDecoration(labelText: 'Description'),
+            ),
+          ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
           ElevatedButton(
             onPressed: () {
               final provider = Provider.of<ResumeProvider>(context, listen: false);
@@ -39,7 +57,9 @@ class ExperienceScreen extends StatelessWidget {
                 duration: durationController.text,
                 description: descController.text,
               );
-              exp == null ? provider.addExperience(newExp) : provider.updateExperience(newExp);
+              exp == null
+                  ? provider.addExperience(newExp)
+                  : provider.updateExperience(newExp);
               Navigator.pop(context);
             },
             child: const Text('Save'),
@@ -47,6 +67,7 @@ class ExperienceScreen extends StatelessWidget {
         ],
       ),
     );
+;
   }
 
   @override
