@@ -50,27 +50,45 @@ class ProjectsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Projects')),
-      body: Consumer<ResumeProvider>(
-        builder: (context, provider, child) {
-          return ListView.builder(
-            itemCount: provider.projectsList.length,
-            itemBuilder: (context, index) {
-              final proj = provider.projectsList[index];
-              return ListTile(
-                title: Text(proj.title),
-                subtitle: Text(proj.techStack),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(icon: const Icon(Icons.edit), onPressed: () => _showAddEditDialog(context, proj: proj)),
-                    IconButton(icon: const Icon(Icons.delete), onPressed: () => provider.deleteProject(proj.id!)),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-      ),
+        body: Consumer<ResumeProvider>(
+          builder: (context, provider, child) {
+            final projects = provider.projectsList;
+
+            if (projects.isEmpty) {
+              return const Center(child: Text('No projects added yet.'));
+            }
+
+            return ReorderableListView.builder(
+              itemCount: projects.length,
+              onReorder: (oldIndex, newIndex) {
+                provider.reorderProjects(oldIndex, newIndex);
+              },
+              itemBuilder: (context, index) {
+                final proj = projects[index];
+                return ListTile(
+                  key: ValueKey(proj.id),
+                  title: Text(proj.title),
+                  subtitle: Text(proj.techStack),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () => _showAddEditDialog(context, proj: proj),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () => provider.deleteProject(proj.id!),
+                      ),
+                      const Icon(Icons.drag_handle),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddEditDialog(context),
         child: const Icon(Icons.add),

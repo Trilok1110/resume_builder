@@ -46,27 +46,45 @@ class SkillsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Skills')),
-      body: Consumer<ResumeProvider>(
-        builder: (context, provider, child) {
-          return ListView.builder(
-            itemCount: provider.skillsList.length,
-            itemBuilder: (context, index) {
-              final skill = provider.skillsList[index];
-              return ListTile(
-                title: Text(skill.name),
-                subtitle: Text(skill.level),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(icon: const Icon(Icons.edit), onPressed: () => _showAddEditDialog(context, skill: skill)),
-                    IconButton(icon: const Icon(Icons.delete), onPressed: () => provider.deleteSkill(skill.id!)),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-      ),
+        body: Consumer<ResumeProvider>(
+          builder: (context, provider, child) {
+            final skills = provider.skillsList;
+
+            if (skills.isEmpty) {
+              return const Center(child: Text('No skills added yet.'));
+            }
+
+            return ReorderableListView.builder(
+              itemCount: skills.length,
+              onReorder: (oldIndex, newIndex) {
+                provider.reorderProjects(oldIndex, newIndex);
+              },
+              itemBuilder: (context, index) {
+                final skill = skills[index];
+                return ListTile(
+                  key: ValueKey(skill.id),
+                  title: Text(skill.name),
+                  subtitle: Text(skill.level),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () => _showAddEditDialog(context, skill: skill),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () => provider.deleteSkill(skill.id!),
+                      ),
+                      const Icon(Icons.drag_handle),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddEditDialog(context),
         child: const Icon(Icons.add),

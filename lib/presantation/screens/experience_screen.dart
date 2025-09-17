@@ -53,27 +53,45 @@ class ExperienceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Experience')),
-      body: Consumer<ResumeProvider>(
-        builder: (context, provider, child) {
-          return ListView.builder(
-            itemCount: provider.experienceList.length,
-            itemBuilder: (context, index) {
-              final exp = provider.experienceList[index];
-              return ListTile(
-                title: Text(exp.job),
-                subtitle: Text('${exp.company} (${exp.duration})'),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(icon: const Icon(Icons.edit), onPressed: () => _showAddEditDialog(context, exp: exp)),
-                    IconButton(icon: const Icon(Icons.delete), onPressed: () => provider.deleteExperience(exp.id!)),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-      ),
+        body: Consumer<ResumeProvider>(
+          builder: (context, provider, child) {
+            final experiences = provider.experienceList;
+
+            if (experiences.isEmpty) {
+              return const Center(child: Text('No experiences added yet.'));
+            }
+
+            return ReorderableListView.builder(
+              itemCount: experiences.length,
+              onReorder: (oldIndex, newIndex) {
+                provider.reorderExperience(oldIndex, newIndex);
+              },
+              itemBuilder: (context, index) {
+                final exp = experiences[index];
+                return ListTile(
+                  key: ValueKey(exp.id), // required for reorder
+                  title: Text(exp.job),
+                  subtitle: Text('${exp.company} (${exp.duration})'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () => _showAddEditDialog(context, exp: exp),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () => provider.deleteExperience(exp.id!),
+                      ),
+                      const Icon(Icons.drag_handle), // drag handle
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddEditDialog(context),
         child: const Icon(Icons.add),
