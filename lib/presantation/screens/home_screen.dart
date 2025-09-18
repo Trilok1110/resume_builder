@@ -5,6 +5,7 @@ import 'package:resume_builder/presantation/screens/preview_screen.dart';
 import 'package:resume_builder/presantation/screens/projects_screen.dart';
 import 'package:resume_builder/presantation/screens/skills_screen.dart';
 
+import '../../core/navigation.dart';
 import '../../core/theme.dart';
 import '../providers/resume_provider.dart';
 import '../widgets/section_card.dart';
@@ -30,10 +31,8 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
             tooltip: 'Export Resume',
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const PreviewScreen()),
-            ),
+              onPressed: () => navigateWithSlide(context, const PreviewScreen()),
+
           ),
           const SizedBox(width: 8),
         ],
@@ -46,42 +45,27 @@ class HomeScreen extends StatelessWidget {
               SectionCard(
                 title: 'Personal Info',
                 icon: Icons.person_outline,
-                onTap: () => _navigateToScreen(
-                  context,
-                  const PersonalInfoScreen(),
-                ),
+                onTap: () => navigateWithSlide(context, PersonalInfoScreen())
               ),
               SectionCard(
                 title: 'Education',
                 icon: Icons.school_outlined,
-                onTap: () => _navigateToScreen(
-                  context,
-                  const EducationScreen(),
-                ),
+                onTap: () => navigateWithSlide(context, EducationScreen())
               ),
               SectionCard(
                 title: 'Experience',
                 icon: Icons.work_outline,
-                onTap: () => _navigateToScreen(
-                  context,
-                  const ExperienceScreen(),
-                ),
+                onTap: () => navigateWithSlide(context, ExperienceScreen())
               ),
               SectionCard(
                 title: 'Skills',
                 icon: Icons.star_outline,
-                onTap: () => _navigateToScreen(
-                  context,
-                  const SkillsScreen(),
-                ),
+                onTap: () => SkillsScreen()
               ),
               SectionCard(
                 title: 'Projects',
                 icon: Icons.code_outlined,
-                onTap: () => _navigateToScreen(
-                  context,
-                  const ProjectsScreen(),
-                ),
+                onTap: () => navigateWithSlide(context, ProjectsScreen())
               ),
             ];
 
@@ -213,10 +197,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const PreviewScreen()),
-        ),
+        onPressed: () => navigateWithSlide(context, PreviewScreen()),
         icon: const Icon(Icons.visibility),
         label: const Text('Preview'),
         tooltip: 'View Full Resume Preview',
@@ -224,15 +205,15 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToScreen(BuildContext context, Widget screen) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => screen,
-        settings: const RouteSettings(name: 'Section Screen'),
-      ),
-    );
-  }
+  // void _navigateToScreen(BuildContext context, Widget screen) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (_) => screen,
+  //       settings: const RouteSettings(name: 'Section Screen'),
+  //     ),
+  //   );
+  // }
 
   Widget _buildMiniPreview(ResumeProvider provider, BuildContext context) {
     if (provider.personalInfo == null && provider.educationList.isEmpty && provider.experienceList.isEmpty) {

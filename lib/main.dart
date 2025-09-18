@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(create: (_) => ResumeProvider() ,child:MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Resume Builder',
       theme: AppTheme.theme,
       home:  const HomeScreen(),
