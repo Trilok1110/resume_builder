@@ -5,6 +5,7 @@ import '../../core/theme.dart';
 import '../../data/models/experience.dart';
 import '../providers/resume_provider.dart';
 import '../widgets/custom_alert_box.dart';
+import '../widgets/app_button.dart';
 
 class ExperienceScreen extends StatelessWidget {
   const ExperienceScreen({super.key});
@@ -42,29 +43,34 @@ class ExperienceScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final provider = Provider.of<ResumeProvider>(context, listen: false);
-              final newExp = Experience(
-                id: exp?.id,
-                job: jobController.text,
-                company: companyController.text,
-                duration: durationController.text,
-                description: descController.text,
-              );
-              exp == null
-                  ? provider.addExperience(newExp)
-                  : provider.updateExperience(newExp);
-              Navigator.pop(context);
-            },
-            child: const Text('Save'),
-          ),
-        ],
+          actions: [
+            AppButton(
+              text: "Cancel",
+              type: ButtonType.secondary, // outlined style
+              isFullWidth: false,
+              onPressed: () => Navigator.pop(context),
+            ),
+            AppButton(
+              text: "Save",
+              type: ButtonType.primary, // gradient style
+              isFullWidth: false,
+              onPressed: () {
+                final provider = Provider.of<ResumeProvider>(context, listen: false);
+                final newExp = Experience(
+                  id: exp?.id,
+                  job: jobController.text,
+                  company: companyController.text,
+                  duration: durationController.text,
+                  description: descController.text,
+                );
+                exp == null
+                    ? provider.addExperience(newExp)
+                    : provider.updateExperience(newExp);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+
       ),
     );
 ;

@@ -17,7 +17,7 @@ class Project {
     return {
       'id': id,
       'title': title,
-      'techStack': techStack,
+      'tech_stack': techStack,
       'description': description,
       'position': position,
     };
@@ -27,7 +27,7 @@ class Project {
     return Project(
       id: map['id'] as int?,
       title: map['title'] as String,
-      techStack: map['techStack'] as String,
+      techStack: map['tech_stack'] as String,
       description: map['description'] as String,
       position: map['position'] as int? ?? 0,
     );

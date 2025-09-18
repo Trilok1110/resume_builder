@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../data/models/personal_info.dart';
 import '../providers/resume_provider.dart';
 import '../widgets/custom_text_field.dart';
-import '../widgets/primary_button.dart';
+import '../widgets/app_button.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
   const PersonalInfoScreen({super.key});
@@ -51,7 +51,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               CustomTextField(label: 'Email', controller: _emailController),
               CustomTextField(label: 'Phone', controller: _phoneController),
               CustomTextField(label: 'Address', controller: _addressController),
-              PrimaryButton(
+              AppButton(
                 text: "Save",
                 onPressed: _save,
               )

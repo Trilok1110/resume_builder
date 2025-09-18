@@ -5,20 +5,10 @@ import 'package:resume_builder/presantation/screens/preview_screen.dart';
 import 'package:resume_builder/presantation/screens/projects_screen.dart';
 import 'package:resume_builder/presantation/screens/skills_screen.dart';
 
+import '../../core/theme.dart';
 import '../providers/resume_provider.dart';
 import '../widgets/section_card.dart';
 import 'education_screen.dart';
-import '../../core/theme.dart';
-import 'experience_screen.dart';
-
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-
-import '../providers/resume_provider.dart';
-import '../widgets/section_card.dart';
-import 'education_screen.dart';
-import '../../core/theme.dart';
 import 'experience_screen.dart';
 
 class HomeScreen extends StatelessWidget {

@@ -6,6 +6,7 @@ import '../../data/models/skill.dart';
 import '../providers/resume_provider.dart';
 import '../widgets/custom_alert_box.dart';
 import '../widgets/custom_text_field.dart';
+import '../widgets/app_button.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});
@@ -32,14 +33,19 @@ class SkillsScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          TextButton(
+          AppButton(
+            text: "Cancel",
+            type: ButtonType.secondary,
+            isFullWidth: false,
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
           ),
-          ElevatedButton(
+          AppButton(
+            text: "Save",
+            type: ButtonType.primary,
+            isFullWidth: false,
             onPressed: () {
               final provider =
-              Provider.of<ResumeProvider>(context, listen: false);
+                  Provider.of<ResumeProvider>(context, listen: false);
               final newSkill = Skill(
                 id: skill?.id,
                 name: nameController.text,
@@ -50,57 +56,56 @@ class SkillsScreen extends StatelessWidget {
                   : provider.updateSkill(newSkill);
               Navigator.pop(context);
             },
-            child: const Text('Save'),
           ),
         ],
       ),
     );
-;
+    ;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Skills')),
-        body: Consumer<ResumeProvider>(
-          builder: (context, provider, child) {
-            final skills = provider.skillsList;
+      body: Consumer<ResumeProvider>(
+        builder: (context, provider, child) {
+          final skills = provider.skillsList;
 
-            if (skills.isEmpty) {
-              return const Center(child: Text('No skills added yet.'));
-            }
+          if (skills.isEmpty) {
+            return const Center(child: Text('No skills added yet.'));
+          }
 
-            return ReorderableListView.builder(
-              itemCount: skills.length,
-              onReorder: (oldIndex, newIndex) {
-                provider.reorderProjects(oldIndex, newIndex);
-              },
-              itemBuilder: (context, index) {
-                final skill = skills[index];
-                return ListTile(
-                  key: ValueKey(skill.id),
-                  title: Text(skill.name),
-                  subtitle: Text(skill.level),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () => _showAddEditDialog(context, skill: skill),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () => provider.deleteSkill(skill.id!),
-                      ),
-                      const Icon(Icons.drag_handle),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-        ),
-
+          return ReorderableListView.builder(
+            itemCount: skills.length,
+            onReorder: (oldIndex, newIndex) {
+              provider.reorderProjects(oldIndex, newIndex);
+            },
+            itemBuilder: (context, index) {
+              final skill = skills[index];
+              return ListTile(
+                key: ValueKey(skill.id),
+                title: Text(skill.name),
+                subtitle: Text(skill.level),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () =>
+                          _showAddEditDialog(context, skill: skill),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () => provider.deleteSkill(skill.id!),
+                    ),
+                    const Icon(Icons.drag_handle),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddEditDialog(context),
         child: const Icon(Icons.add),

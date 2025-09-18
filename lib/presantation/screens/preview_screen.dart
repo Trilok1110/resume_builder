@@ -9,7 +9,7 @@ import '../providers/resume_provider.dart';
 class PreviewScreen extends StatelessWidget {
   const PreviewScreen({super.key});
 
-  /// ---------- FLUTTER UI HELPERS ---------- ///
+
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -37,7 +37,6 @@ class PreviewScreen extends StatelessWidget {
     );
   }
 
-  /// ---------- PDF HELPERS ---------- ///
   pw.Widget _pdfSectionTitle(String title) {
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(vertical: 8),
@@ -63,7 +62,6 @@ class PreviewScreen extends StatelessWidget {
     );
   }
 
-  /// ---------- PDF EXPORT ---------- ///
   Future<File> _exportPdf(BuildContext context) async {
     final provider = Provider.of<ResumeProvider>(context, listen: false);
     final pdf = pw.Document();
@@ -182,7 +180,6 @@ class PreviewScreen extends StatelessWidget {
     return file;
   }
 
-  /// ---------- MAIN UI ---------- ///
   @override
   Widget build(BuildContext context) {
     return Scaffold(
